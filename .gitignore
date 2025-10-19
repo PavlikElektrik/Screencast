@@ -1,0 +1,28 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+
+# Logs and cache
+logs/
+cache/
+
+# Poetry
+#poetry.lock
+
+# OS
+.DS_Store
+Thumbs.db
