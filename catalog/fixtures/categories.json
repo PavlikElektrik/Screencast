@@ -1,0 +1,26 @@
+[
+{
+  "model": "catalog.category",
+  "pk": 7,
+  "fields": {
+    "name": "Фрукты",
+    "description": "Свежие фрукты"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 8,
+  "fields": {
+    "name": "Напитки",
+    "description": "Освежающие напитки"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 9,
+  "fields": {
+    "name": "Овощи",
+    "description": "Свежие овощи"
+  }
+}
+]
