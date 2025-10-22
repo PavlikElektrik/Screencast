@@ -18,9 +18,13 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Свяжитесь с нами</h5>
-                    <p class="card-text">Адрес: г. Москва, ул. Примерная, д. 1</p>
-                    <p class="card-text">Телефон: +7 (999) 123-45-67</p>
-                    <p class="card-text">Email: info@example.com</p>
+                    {% if contact_info %}
+                        <p class="card-text">Адрес: {{ contact_info.address }}</p>
+                        <p class="card-text">Телефон: {{ contact_info.phone }}</p>
+                        <p class="card-text">Email: {{ contact_info.email }}</p>
+                    {% else %}
+                        <p class="card-text text-muted">Контактная информация пока не добавлена.</p>
+                    {% endif %}
                     <a href="{% url 'home' %}" class="btn btn-secondary">На главную</a>
                 </div>
             </div>
@@ -39,7 +43,8 @@
                         {% for message in messages %}
                             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                                 {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
                             </div>
                         {% endfor %}
                     {% endif %}
