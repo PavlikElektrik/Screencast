@@ -1,4 +1,6 @@
 # blog/views.py
+from django.core.mail import send_mail
+from django.conf import settings
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import BlogPost
@@ -24,10 +26,13 @@ class BlogPostDetailView(DetailView):
         obj.views_count += 1
         obj.save()
 
-        # Дополнительное задание: отправка email при 100 просмотрах
         if obj.views_count == 100:
-            # Здесь будет код отправки email
-            pass
+            send_mail(
+                subject="Поздравляем с 100 просмотров!",
+                message=f"Ваша статья '{obj.title}' достигла 100 просмотров!",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.ADMIN_EMAIL],
+            )
 
         return obj
 
