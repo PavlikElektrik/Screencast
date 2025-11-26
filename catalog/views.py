@@ -1,50 +1,35 @@
+# catalog/views.py
+from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
 from django.contrib import messages
-from django.shortcuts import redirect, render, get_object_or_404
 from .models import Product, ContactInfo
-from .forms import ProductForm
-from django.core.paginator import Paginator
+from .forms import FeedbackForm
 
+class HomeView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'page_obj'
+    paginate_by = 6
 
-def home(request):
-    products = Product.objects.all()
-    paginator = Paginator(products, 6)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    def get_queryset(self):
+        return Product.objects.all()
 
+class ContactsView(FormView):
+    template_name = 'catalog/contacts.html'
+    form_class = FeedbackForm
+    success_url = reverse_lazy('contacts')
 
-    latest_products = Product.objects.order_by('-created_at')[:5]
-    for p in latest_products:
-        print(f"Product: {p.name}, Created: {p.created_at}")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contact_info'] = ContactInfo.objects.first()
+        return context
 
-    context = {
-        'page_obj': page_obj,
+    def form_valid(self, form):
+        messages.success(self.request, f'Спасибо, {form.cleaned_data["name"]}! Ваше сообщение отправлено.')
+        return super().form_valid(form)
 
-    }
-    return render(request, 'home.html', context)
-
-
-def contacts(request):
-    contact_info = ContactInfo.objects.first()
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        message = request.POST.get('message')
-        messages.success(request, f'Спасибо, {name}! Ваше сообщение отправлено.')
-        return redirect('contacts')
-    return render(request, 'contacts.html', {'contact_info': contact_info})
-
-
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'product_detail.html', {'product': product})
-
-
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = ProductForm()
-    return render(request, 'add_product.html', {'form': form})
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
