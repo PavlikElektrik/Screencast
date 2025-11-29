@@ -3,10 +3,19 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Каталог товаров</h1>
 
+    <div class="row align-items-center mb-4">
+        <div class="col-6">
+            <h1 class="mb-0">Каталог товаров</h1>
+        </div>
+        <div class="col-6 text-end">
+            <a href="{% url 'product_create' %}" class="btn btn-success">
+                Создать новый продукт
+            </a>
+        </div>
+    </div>
     <div class="row">
-        {% for product in page_obj %}  <!-- ← используем page_obj, а не products -->
+        {% for product in page_obj %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
                 {% if product.image %}
@@ -31,7 +40,6 @@
         {% endfor %}
     </div>
 
-    <!-- Пагинация -->
     {% if page_obj.has_other_pages %}
     <nav aria-label="Страницы">
         <ul class="pagination justify-content-center">
