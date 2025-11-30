@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catalog',
     'blog',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -74,7 +75,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'screencast.wsgi.application'
-
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
