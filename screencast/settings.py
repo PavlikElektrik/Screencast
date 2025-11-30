@@ -74,10 +74,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'screencast.wsgi.application'
-AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -138,3 +135,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # screencast/settings.py
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+WSGI_APPLICATION = 'screencast.wsgi.application'
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'users:login'
