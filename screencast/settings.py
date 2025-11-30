@@ -137,3 +137,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # screencast/settings.py
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'admin@example.com')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
