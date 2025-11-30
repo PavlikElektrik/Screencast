@@ -1,10 +1,12 @@
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import UserRegisterForm
 from .models import User
+
 
 class RegisterView(CreateView):
     model = User
@@ -22,3 +24,13 @@ class RegisterView(CreateView):
             recipient_list=[user.email],
         )
         return super().form_valid(form)
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserRegisterForm  # Можно использовать ту же форму или создать новую без пароля
+    template_name = 'users/profile.html'
+    success_url = reverse_lazy('home')
+
+    def get_object(self, queryset=None):
+        return self.request.user
