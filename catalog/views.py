@@ -1,10 +1,11 @@
 # catalog/views.py
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Product, ContactInfo
-from .forms import FeedbackForm
+from .forms import FeedbackForm, ProductForm
+
 
 class HomeView(ListView):
     model = Product
@@ -14,6 +15,7 @@ class HomeView(ListView):
 
     def get_queryset(self):
         return Product.objects.all()
+
 
 class ContactsView(FormView):
     template_name = 'catalog/contacts.html'
@@ -29,7 +31,28 @@ class ContactsView(FormView):
         messages.success(self.request, f'Спасибо, {form.cleaned_data["name"]}! Ваше сообщение отправлено.')
         return super().form_valid(form)
 
+
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('home')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('home')
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('home')
