@@ -3,6 +3,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView, D
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, ContactInfo
 from .forms import FeedbackForm, ProductForm
 
@@ -32,27 +33,26 @@ class ContactsView(FormView):
         return super().form_valid(form)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView): #  Добавили миксин
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('home')
+    # Если не авторизован -> перекинет на login (автоматически)
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView): #  Добавили миксин
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('home')
 
-
-class ProductUpdateView(UpdateView):
-    model = Product
-    form_class = ProductForm
-    template_name = 'catalog/product_form.html'
-    success_url = reverse_lazy('home')
-
-
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView): #  Добавили миксин
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('home')
