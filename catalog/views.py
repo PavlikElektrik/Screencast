@@ -4,9 +4,10 @@ from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
 from .models import Product, ContactInfo
 from .forms import FeedbackForm, ProductForm
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 
 class HomeView(ListView):
@@ -33,7 +34,7 @@ class ContactsView(FormView):
         messages.success(self.request, f'Спасибо, {form.cleaned_data["name"]}! Ваше сообщение отправлено.')
         return super().form_valid(form)
 
-
+@method_decorator(cache_page(60), name='dispatch')
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
