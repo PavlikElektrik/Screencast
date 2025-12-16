@@ -4,10 +4,12 @@ from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.core.exceptions import PermissionDenied
 from .models import Product, ContactInfo
 from .forms import FeedbackForm, ProductForm
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from .services import get_products_by_category
+from .models import Category
 
 class HomeView(ListView):
     model = Product
@@ -33,7 +35,7 @@ class ContactsView(FormView):
         messages.success(self.request, f'Спасибо, {form.cleaned_data["name"]}! Ваше сообщение отправлено.')
         return super().form_valid(form)
 
-
+@method_decorator(cache_page(60), name='dispatch')
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
@@ -85,3 +87,21 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):  #
             return True
 
         return False
+
+class CategoryListView(ListView):
+    model = Product
+    template_name = 'catalog/product_list_by_category.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # Получаем category_id из URL
+        category_id = self.kwargs.get('pk')
+        # Используем нашу сервисную функцию с кешированием
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем название категории для заголовка
+        category_id = self.kwargs.get('pk')
+        context['category'] = Category.objects.get(pk=category_id)
+        return context
